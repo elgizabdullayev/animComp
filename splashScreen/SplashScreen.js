@@ -1,12 +1,16 @@
 import React, { Component } from 'react';
-import {Animated, View, Image, Text,  TouchableOpacity} from 'react-native';
+import {Animated, View, Image, Text,  TouchableOpacity, Modal} from 'react-native';
 import {styles} from './style';
+import LoadingScreen from '../loadingScreen/LoadingScreen'
 
 
 
 export default class SplashScreen extends Component{
     constructor(){
         super();
+        this.state={
+            showLoading : false
+        }
         this.scaleValue = new Animated.Value(0)
         this.textTranslate = new Animated.Value(350)
         this.planetTranslate = new Animated.Value(-150)
@@ -92,14 +96,15 @@ export default class SplashScreen extends Component{
                     useNativeDriver: false
                 }
               ),
+              Animated.timing(
+                this.opacityValue,{
+                    toValue:1,
+                    duration: 500,
+                    useNativeDriver: false,
+                    delay: 3000
+                }
+              ),
         ]),
-        Animated.timing(
-            this.opacityValue,{
-                toValue:1,
-                duration: 500,
-                useNativeDriver: false
-            }
-          ),
     ]).start()
     }
     componentDidMount(){
@@ -124,10 +129,13 @@ export default class SplashScreen extends Component{
                 <View style={styles.circleLittle}></View>
             </Animated.View>
             <Animated.View style={{opacity: this.opacityValue }}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=>this.setState( {showLoading: true})}>
                 <Image source={require('../images/play.png')} style={styles.playStyle} />
                 </TouchableOpacity>
             </Animated.View>
+            <Modal visible={this.state.showLoading} >
+            <LoadingScreen/>
+            </Modal>
             </View>
         );
     }
